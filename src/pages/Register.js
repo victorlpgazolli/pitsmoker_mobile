@@ -19,10 +19,10 @@ export default function Main({ navigation }) {
           email: account.email,
           password: account.password
         })
-        const { _id: id } = JSON.parse(JSON.stringify(response.data))
-        account.id = id;
-        await AsyncStorage.setItem('@account_id', account.id);
-        navigation.navigate("Principal", account)
+        const { data } = JSON.parse(JSON.stringify(response))
+        data.error ?
+          ToastAndroid.show("E-mail já cadastrado", ToastAndroid.SHORT) :
+          accessGranted(data)
       } catch (error) {
         ToastAndroid.show("problema ao criar conta", ToastAndroid.SHORT);
         console.log(error)
@@ -32,6 +32,11 @@ export default function Main({ navigation }) {
     }
     //const response = await api.post('/users', { username: user })
 
+  }
+  async function accessGranted(user) {
+    account.id = user._id;
+    AsyncStorage.setItem('@account_id', user._id);
+    navigation.navigate("Principal", account)
   }
   function validateInputs() {
     if (account.name.trim().length != 0 && account.email.trim().length != 0 && account.password.trim().length != 0) {
