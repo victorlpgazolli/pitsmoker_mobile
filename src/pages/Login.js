@@ -69,7 +69,7 @@ export default function Login({ navigation }) {
             }
             getAccount();
         } else {
-
+            ToastAndroid.show("Digite corretamente os campos", ToastAndroid.SHORT)
         }
 
     }
