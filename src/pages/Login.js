@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         padding: 30,
-        backgroundColor: '#2B2B2B'
+        backgroundColor: '#151515'
     },
     input: {
         height: 46,
