@@ -13,8 +13,6 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chatMessage: "",
-      chatMessages: [],
       fill: 10
     };
   }
@@ -27,13 +25,12 @@ export default class Main extends Component {
     })
 
     this.socket.on("data", msg => {
-
-      this.setState({ chatMessages: [...this.state.chatMessages, msg] });
-
+      ToastAndroid.show(`Dados recebidos: ${parseInt(msg)}`, ToastAndroid.SHORT)
+      this.setState({ fill: parseInt(msg) });
     });
   }
-    // REMOVE BACK BUTTON
-  
+  // REMOVE BACK BUTTON
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -44,14 +41,9 @@ export default class Main extends Component {
   }
 
   render() {
-    const chatMessages = this.state.chatMessages.map(chatMessage => (
-      <Text key={chatMessage}>{chatMessage}</Text>
-    ));
-    var temp = 52
     return (
       // <View style={styles.container}>
       <LinearGradient colors={['#121212', '#171717', '#2B2B2B']} style={styles.linearGradient}>
-        {chatMessages}
         <View style={[styles.tempInfo]}>
           <AnimatedCircularProgress
             easing={Easing.quad}
