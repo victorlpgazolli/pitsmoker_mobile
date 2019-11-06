@@ -9,6 +9,7 @@ var account = {
     password: '',
     id: ''
 }
+var screenToNavigateTo = "Escolher"; //
 export default function Login({ navigation }) {
     useEffect(async () => {
         try {
@@ -17,15 +18,9 @@ export default function Login({ navigation }) {
                     if (stored_id.length > 0) {
                         async function getAccount() {
                             const response = await api.get('/users/' + stored_id)
-                            account = {
-                                name: response.data.response.name,
-                                email: response.data.response.email,
-                                password: response.data.response.password,
-                                id: response.data.response._id,
-                            }
+                            navigation.navigate(screenToNavigateTo, JSON.stringify(response.data.response))
                         }
                         getAccount()
-                        navigation.navigate('Principal', account)
                     }
                 } catch{
 
@@ -40,17 +35,17 @@ export default function Login({ navigation }) {
     }, []);
     async function handleLogin() {
         // await AsyncStorage.setItem('username', username);
-        // navigation.navigate('Principal')
+        // navigation.navigate(screenToNavigateTo)
         if (account.email.trim().length > 0 && account.password.trim().length > 0) {
             async function getAccount() {
                 // var registered_account = {};
                 // console.log(account)
                 try {
                     const { data } = await api.post('/users', { email: account.email, password: account.password })
-                    const response = JSON.parse(JSON.stringify(data))
-                    response.error ?
+                    console.log(data)
+                    data.error ?
                         ToastAndroid.show("Login ou senha invalidos", ToastAndroid.SHORT) :
-                        accessGranted(response)
+                        accessGranted(data)
                     // if(response == 'User not found'){
                     //     
                     // }else{
@@ -64,7 +59,7 @@ export default function Login({ navigation }) {
                 }
 
 
-                // navigation.navigate('Principal')//, account)
+                // navigation.navigate(screenToNavigateTo)//, account)
                 // registered_account.id.length != null ? checkCredencials(registered_account.password) : ToastAndroid.show("Login inválido", ToastAndroid.SHORT);;
             }
             getAccount();
@@ -79,7 +74,8 @@ export default function Login({ navigation }) {
 
     async function accessGranted(user) {
         AsyncStorage.setItem('@account_id', user._id);
-        navigation.navigate('Principal', user);
+        console.log(`LOGIN: ${user}`)
+        navigation.navigate(screenToNavigateTo, user);
     }
     return (
         <KeyboardAvoidingView
