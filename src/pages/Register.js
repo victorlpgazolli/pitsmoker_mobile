@@ -10,16 +10,17 @@ var account = {
   id: ''
 }
 
-export default function Main({ navigation }) {
+export default function Register({ navigation }) {
   async function handleRegister() {
     if (validateInputs()) {
       try {
-        const response = await api.post('/cadastrar', {
+        const response = await api.post('/cadastrar/user', {
           name: account.name,
           email: account.email,
           password: account.password
         })
         const { data } = JSON.parse(JSON.stringify(response))
+        console.log(data)
         data.error ?
           ToastAndroid.show("E-mail já cadastrado", ToastAndroid.SHORT) :
           accessGranted(data)
