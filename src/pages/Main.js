@@ -5,8 +5,7 @@ import io from "socket.io-client";
 import LinearGradient from 'react-native-linear-gradient';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import RNExitApp from 'react-native-exit-app';
-// var lurl = 'http://pit-smoker-backend.herokuapp.com'
-var lurl = 'http://192.168.0.104:3333'
+var lurl = 'http://pit-smoker-backend.herokuapp.com'
 var socket;
 socket = io.connect(lurl);
 export default function Main({ navigation }) {
