@@ -3,6 +3,9 @@ import React from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import Login from './pages/Login'
 import Main from './pages/Main'
+import Escolher from './pages/Escolher'
+import Acoes from './pages/Acoes'
+import RegisterRecipe from './pages/RegisterRecipe'
 import Cadastrar from './pages/Register'
 import colors from './assets/colors'
 const tabBarOptions = {
@@ -29,10 +32,30 @@ export default createAppContainer(
         header: null,
       }),
     },
+    Escolher: {
+      screen: Escolher,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Acoes: {
+      screen: Acoes,
+      navigationOptions: () => ({
+        headerStyle: { backgroundColor: colors.black },
+      }),
+    },
     CadastrarLogin: {
       screen: Cadastrar,
       navigationOptions: () => ({
         title: 'Criar Conta',
+        headerStyle: { backgroundColor: colors.gray },
+        headerTitleStyle: { color: '#fff' },
+      }),
+    },
+    CadastrarReceita: {
+      screen: RegisterRecipe,
+      navigationOptions: () => ({
+        title: 'Criar Receita',
         headerStyle: { backgroundColor: colors.gray },
         headerTitleStyle: { color: '#fff' },
       }),
