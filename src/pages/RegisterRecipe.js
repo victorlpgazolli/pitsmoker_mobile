@@ -15,8 +15,8 @@ var recipe = {
     num_carnes: '',
     user_id: '',
 }
-const _width = Dimensions.get('window').width
-const _height = Dimensions.get('window').height
+const { width, height} = Dimensions.get('window').width
+
 export default function RegisterRecipe({ navigation }) {
     async function handleRegister() {
         if (validateInputs()) {
