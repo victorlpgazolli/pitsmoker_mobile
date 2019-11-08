@@ -26,7 +26,7 @@ export default function Escolher({ navigation }) {
             navigation.navigate('Acoes', account)
         }
         if (type == 1) {
-            navigation.navigate('Acoes', account)
+            navigation.navigate('ListaPlanosDisponiveis', { account: account, user_type: false })
         }
     }
     return (

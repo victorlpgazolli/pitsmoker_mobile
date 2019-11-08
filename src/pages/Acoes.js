@@ -1,17 +1,17 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, ScrollView, Image, TextInput, View, Dimensions, Text, TouchableHighlight, ToastAndroid, TouchableOpacity } from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage'
+import { KeyboardAvoidingView, Platform, StyleSheet, FlatList, Image, TextInput, View, Dimensions, Text, TouchableHighlight, ToastAndroid, TouchableOpacity } from 'react-native'
+import customStyles from '../assets/styles';
 import api from '../services/api';
 import Modal from "react-native-modal";
 var account, refresh = false;
 global.newAccount = {}
-const _width = Dimensions.get('window').width
-const _height = Dimensions.get('window').height
+const { width, height } = Dimensions.get('window').width
 global.modal_recipe_actions = false;
 global.temp_recipe = {};
 export default function Acoes({ navigation }) {
     const [isNew, updateisNew] = useState(false);
+    const [load, setLoad] = useState({ refreshing: false });
     const [, updateState] = React.useState();
     const forceUpdate = useCallback(() => updateState({}), []);
     useEffect(() => {
@@ -25,18 +25,6 @@ export default function Acoes({ navigation }) {
     }, [account]);
 
     account = refresh ? global.newAccount : JSON.parse(navigation.state.params)
-    refresh = false;
-    console.log(account)
-    // console.log(`ACOES: ${JSON.stringify(account.recipes)}`)
-    var chooseType = function (type) {
-        if (type == 0) {
-            navigation.navigate('Acoes', account)
-        }
-        if (type == 1) {
-            console.log(account)
-            navigation.navigate('Acoes', account)
-        }
-    }
     function showPopup(_recipe) {
         global.modal_recipe_actions = true;
         global.temp_recipe = _recipe;
@@ -46,14 +34,18 @@ export default function Acoes({ navigation }) {
         global.modal_recipe_actions = false;
         updateisNew(!isNew)
     }
+    function handleRefresh() {
+        //simulate refresh
+        getAccount();
+        setLoad({ refreshing: true })
+    }
     async function deleteRecipe(_recipe) {
         try {
             const response = await api.post('/apagar/receita', {
-                recipe_name: _recipe.name,
+                recipe_id: _recipe._id,
                 user_id: account._id
             })
             const { data } = JSON.parse(JSON.stringify(response))
-            console.log(data)
             data.error ?
                 alertErrors(data.error) :
                 accessGranted(data)
@@ -62,9 +54,24 @@ export default function Acoes({ navigation }) {
             console.log(error)
         }
     }
+    async function getAccount() {
+        // var registered_account = {};
+        // console.log(account)
+        try {
+            const { data } = await api.get('/users/' + account._id)
+            data.error ?
+                ToastAndroid.show("Login ou senha invalidos", ToastAndroid.SHORT) :
+                accessGranted(data.response)
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     function accessGranted(user) {
         global.newAccount = user;
         refresh = true;
+        setLoad({ refreshing: false })
         setTimeout(() => { forceUpdate() }, 1000)
     }
     function alertErrors(erros) {
@@ -75,33 +82,33 @@ export default function Acoes({ navigation }) {
         <KeyboardAvoidingView
             behavior="padding"
             enabled={Platform.OS === 'ios'}
-            style={styles.container}>
+            style={customStyles.container}>
             {/* <Text style={[ { marginVertical: 20, color: "#FFF", fontWeight: 'bold', fontSize: 18 }]}>Escolha uma das opções para proceguir:</Text> */}
-            <TouchableOpacity style={[styles.button, styles.shadowButton, styles.colorBackground]} onPress={() => { chooseType(0) }} >
-                <Text style={styles.buttontext}>Entrar no Plano de Assado</Text>
+            <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('ListaPlanosDisponiveis', { account: account, user_type: true }) }} >
+                <Text style={customStyles.buttontext}>Entrar no Plano de Assado</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.shadowButton, styles.colorBackground]} onPress={() => { navigation.navigate('CadastrarReceita', account) }} >
-                <Text style={styles.buttontext}>Criar Plano de Assado</Text>
+            <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('CadastrarReceita', account) }} >
+                <Text style={customStyles.buttontext}>Criar Plano de Assado</Text>
             </TouchableOpacity>
-            <View style={[styles.card, styles.colorBackground]}>
-                <Text style={[styles.buttontext, { padding: 5 }]}>Histórico</Text>
-                <ScrollView>
-                    {
-                        account.recipes.map(recipe => {
-                            return (
-                                recipe.active ?
-                                    <TouchableHighlight onLongPress={() => { showPopup(recipe); }} underlayColor="#eb4034" style={[styles.recipe, styles.shadow]}>
-                                        <View>
-                                            <Text style={[{ color: "#FFF", fontSize: 18 }]}>Nome: {recipe.name}</Text>
-                                            <Text style={[{ color: "#FFF", fontSize: 18 }]}>Descrição: {recipe.description}</Text>
-                                            <Text style={[{ color: "#FFF", fontSize: 18 }]}>Carnes: {recipe.num_carnes}</Text>
-                                        </View>
-                                    </TouchableHighlight> : null
-                            )
-                        })
-                    }
-                </ScrollView>
+            <View style={[customStyles.card, customStyles.colorBackground]}>
+                <Text style={[customStyles.buttontext, { padding: 7 }]}>Meus Planos de Assados</Text>
+                <FlatList
+                    data={account.recipes}
+                    refreshing={load.refreshing}
+                    onRefresh={() => { handleRefresh() }}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => (
+                        item.active && !item.default ?
+                            <TouchableHighlight onLongPress={() => { showPopup(item); }} underlayColor="#eb4034" style={[customStyles.recipe, customStyles.shadow]}>
+                                <View>
+                                    <Text style={[{ color: "#FFF", fontSize: 18 }]}>Nome: {item.name}</Text>
+                                    <Text style={[{ color: "#FFF", fontSize: 18 }]}>Descrição: {item.description}</Text>
+                                    <Text style={[{ color: "#FFF", fontSize: 18 }]}>Carnes: {item.num_carnes}</Text>
+                                </View>
+                            </TouchableHighlight> : null
+                    )}>
+                </FlatList>
             </View>
             <Modal backdropColor={'#00000060'} isVisible={global.modal_recipe_actions}
                 animationIn="slideInDown"
@@ -110,23 +117,23 @@ export default function Acoes({ navigation }) {
                 animationOutTiming={600}
                 onBackdropPress={() => { hidePopup() }}>
                 <View style={{ top: 0, position: 'absolute', right: 0, left: 0 }}>
-                    <View style={[styles.operation]}>
-                        <View style={[styles.modal_card, styles.shadow, { height: 140 }]}>
+                    <View style={[customStyles.operation]}>
+                        <View style={[customStyles.modal_card, customStyles.shadow, { height: 140 }]}>
                             {/* <TextInput
                               onChangeText={val => qnt_atual = val}
                               placeholder={global.transaction ? 'Adicionar' : 'Remover'}
                               autoCapitalize="none"
                               autoCorrect={false}
-                              style={styles.input}
+                              style={customStyles.input}
                               //
                             /> */}
-                            <Text style={[styles.colorBlack]}>Operação que deseja fazer:</Text>
-                            <View style={[styles.actions]}>
-                                <TouchableOpacity onPress={() => { navigation.navigate("CadastrarProduto", { usuario: account, receita: global.temp_recipe, edit: true }); hidePopup(); }} style={[styles.indivAction, styles.floatRight]}>
-                                    <Text style={[styles.colorBlack]}>Editar receita</Text>
+                            <Text style={[customStyles.colorBlack]}>Operação que deseja fazer:</Text>
+                            <View style={[customStyles.actions]}>
+                                <TouchableOpacity onPress={() => { navigation.navigate("CadastrarProduto", { usuario: account, receita: global.temp_recipe, edit: true }); hidePopup(); }} style={[customStyles.indivAction, customStyles.floatRight]}>
+                                    <Text style={[customStyles.colorBlack]}>Editar receita</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { deleteRecipe(global.temp_recipe); hidePopup(); }} style={[styles.indivAction, styles.floatLeft,]}>
-                                    <Text style={[styles.colorBlack]}>Apagar receita</Text>
+                                <TouchableOpacity onPress={() => { deleteRecipe(global.temp_recipe); hidePopup(); }} style={[customStyles.indivAction, customStyles.floatLeft,]}>
+                                    <Text style={[customStyles.colorBlack]}>Apagar receita</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -136,118 +143,3 @@ export default function Acoes({ navigation }) {
         </KeyboardAvoidingView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: "center",
-        flex: 1,
-        alignItems: "center",
-        padding: 30,
-        backgroundColor: '#151515'
-    },
-    input: {
-        height: 46,
-        alignSelf: "stretch",
-        backgroundColor: "#373737",
-        borderRadius: 4,
-        marginTop: 10,
-        color: "#fff",
-        borderColor: "#eb4034",
-        borderBottomWidth: 1,
-        paddingHorizontal: 15,
-    },
-    button: {
-        height: 70,
-        alignSelf: "stretch",
-        borderRadius: 4,
-        marginVertical: 10,
-        justifyContent: 'center',
-        alignItems: "center"
-    },
-    colorBackground: {
-        backgroundColor: '#eb4034',
-    },
-    colorBorder: {
-        borderWidth: 1,
-        borderColor: "#eb4034",
-        marginBottom: 100
-    },
-    textColor: {
-        color: "#eb4034",
-    },
-    buttontext: {
-        color: "#FFF",
-        fontWeight: 'bold',
-        fontSize: 22
-    },
-    card: {
-        height: 250,
-        alignSelf: "stretch",
-        borderRadius: 4,
-        marginVertical: 10,
-        justifyContent: 'center',
-        alignItems: "center"
-    },
-    shadow: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 2,
-    },
-    shadowButton: {
-        shadowColor: "#eb403470",
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    recipe: {
-        backgroundColor: '#f54336',
-        width: 300,
-        padding: 10,
-        marginBottom: 5
-    },
-    modal_card: {
-        padding: 10,
-        backgroundColor: '#ffffff',
-        height: 200,
-        margin: 0,
-        minWidth: 330,
-        alignSelf: "center"
-    },
-    operation: {
-        paddingHorizontal: 10,
-        top: 150,
-        position: 'absolute',
-        height: 140,
-        paddingTop: 10,
-        right: 0,
-        left: 0
-    },
-    actions: {
-        margin: 10,
-    },
-    indivAction: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderColor: '#00000060',
-        borderWidth: 1,
-    },
-    colorBlack: {
-        color: '#000',
-        fontSize: 16
-    },
-    floatRight: {
-        right: 0
-    },
-    floatLeft: {
-        left: 0
-    },
-})
