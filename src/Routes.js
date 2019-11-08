@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Main from './pages/Main'
 import Escolher from './pages/Escolher'
 import Acoes from './pages/Acoes'
+import ListaPlanosDisponiveis from './pages/ListaPlanosDisponiveis'
 import RegisterRecipe from './pages/RegisterRecipe'
 import Cadastrar from './pages/Register'
 import colors from './assets/colors'
@@ -40,6 +41,12 @@ export default createAppContainer(
     },
     Acoes: {
       screen: Acoes,
+      navigationOptions: () => ({
+        headerStyle: { backgroundColor: colors.black },
+      }),
+    },
+    ListaPlanosDisponiveis: {
+      screen: ListaPlanosDisponiveis,
       navigationOptions: () => ({
         headerStyle: { backgroundColor: colors.black },
       }),
