@@ -42,7 +42,7 @@ const styles = {
         fontSize: 22
     },
     card: {
-        height: 250,
+        height: 350,
         alignSelf: "stretch",
         borderRadius: 4,
         marginVertical: 10,

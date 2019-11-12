@@ -43,6 +43,7 @@ export default createAppContainer(
       screen: Acoes,
       navigationOptions: () => ({
         headerStyle: { backgroundColor: colors.black },
+        header: null,
       }),
     },
     ListaPlanosDisponiveis: {
