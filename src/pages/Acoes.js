@@ -84,13 +84,10 @@ export default function Acoes({ navigation }) {
             enabled={Platform.OS === 'ios'}
             style={customStyles.container}>
             {/* <Text style={[ { marginVertical: 20, color: "#FFF", fontWeight: 'bold', fontSize: 18 }]}>Escolha uma das opções para proceguir:</Text> */}
-            <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('ListaPlanosDisponiveis', { account: account, user_type: true }) }} >
+            {/* <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('ListaPlanosDisponiveis', { account: account, user_type: true }) }} >
                 <Text style={customStyles.buttontext}>Entrar no Plano de Assado</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('CadastrarReceita', account) }} >
-                <Text style={customStyles.buttontext}>Criar Plano de Assado</Text>
-            </TouchableOpacity>
             <View style={[customStyles.card, customStyles.colorBackground]}>
                 <Text style={[customStyles.buttontext, { padding: 7 }]}>Meus Planos de Assados</Text>
                 <FlatList
@@ -100,7 +97,7 @@ export default function Acoes({ navigation }) {
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
                         item.active && !item.default ?
-                            <TouchableHighlight onLongPress={() => { showPopup(item); }} underlayColor="#eb4034" style={[customStyles.recipe, customStyles.shadow]}>
+                            <TouchableHighlight onPress={() => { navigation.navigate('Principal', { account: account, recipe: item }) }} onLongPress={() => { showPopup(item); }} underlayColor="#eb4034" style={[customStyles.recipe, customStyles.shadow]}>
                                 <View>
                                     <Text style={[{ color: "#FFF", fontSize: 18 }]}>Nome: {item.name}</Text>
                                     <Text style={[{ color: "#FFF", fontSize: 18 }]}>Descrição: {item.description}</Text>
@@ -110,6 +107,9 @@ export default function Acoes({ navigation }) {
                     )}>
                 </FlatList>
             </View>
+            <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('CadastrarReceita', account) }} >
+                <Text style={customStyles.buttontext}>Criar Plano de Assado</Text>
+            </TouchableOpacity>
             <Modal backdropColor={'#00000060'} isVisible={global.modal_recipe_actions}
                 animationIn="slideInDown"
                 animationOut="slideOutDown"

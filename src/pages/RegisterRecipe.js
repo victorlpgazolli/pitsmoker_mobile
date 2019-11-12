@@ -15,7 +15,7 @@ var recipe = {
     num_carnes: '',
     user_id: '',
 }
-const { width, height} = Dimensions.get('window').width
+const { width, height } = Dimensions.get('window').width
 
 export default function RegisterRecipe({ navigation }) {
     async function handleRegister() {
@@ -45,7 +45,7 @@ export default function RegisterRecipe({ navigation }) {
     async function accessGranted(user) {
         console.log(user)
         AsyncStorage.setItem('@account_id', user._id);
-        navigation.navigate("Principal", { usuario: user, receita: recipe })
+        navigation.navigate("Principal", { account: user, recipe: recipe })
     }
     function alertErrors(erros) {
         ToastAndroid.show(`${erros}`, ToastAndroid.SHORT);
