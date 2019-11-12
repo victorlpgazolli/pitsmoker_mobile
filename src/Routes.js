@@ -29,8 +29,9 @@ export default createAppContainer(
     Principal: {
       screen: Main,
       navigationOptions: () => ({
-        title: 'Principal',
-        header: null,
+        title: 'Estatísticas',
+        headerStyle: { backgroundColor: colors.gray },
+        headerTitleStyle: { color: '#fff' },
       }),
     },
     Escolher: {

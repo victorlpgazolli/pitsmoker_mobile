@@ -37,7 +37,7 @@ export default function Register({ navigation }) {
   async function accessGranted(user) {
     account.id = user._id;
     AsyncStorage.setItem('@account_id', user._id);
-    navigation.navigate("Principal", account)
+    navigation.navigate("Acoes", account)
   }
   function validateInputs() {
     if (account.name.trim().length != 0 && account.email.trim().length != 0 && account.password.trim().length != 0) {

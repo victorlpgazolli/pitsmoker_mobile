@@ -17,7 +17,6 @@ export default function Acoes({ navigation }) {
     useEffect(() => {
         try {
 
-
         } catch (err) {
 
         }
@@ -90,22 +89,29 @@ export default function Acoes({ navigation }) {
 
             <View style={[customStyles.card, customStyles.colorBackground]}>
                 <Text style={[customStyles.buttontext, { padding: 7 }]}>Meus Planos de Assados</Text>
-                <FlatList
-                    data={account.recipes}
-                    refreshing={load.refreshing}
-                    onRefresh={() => { handleRefresh() }}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        item.active && !item.default ?
-                            <TouchableHighlight onPress={() => { navigation.navigate('Principal', { account: account, recipe: item }) }} onLongPress={() => { showPopup(item); }} underlayColor="#eb4034" style={[customStyles.recipe, customStyles.shadow]}>
-                                <View>
-                                    <Text style={[{ color: "#FFF", fontSize: 18 }]}>Nome: {item.name}</Text>
-                                    <Text style={[{ color: "#FFF", fontSize: 18 }]}>Descrição: {item.description}</Text>
-                                    <Text style={[{ color: "#FFF", fontSize: 18 }]}>Carnes: {item.num_carnes}</Text>
-                                </View>
-                            </TouchableHighlight> : null
-                    )}>
-                </FlatList>
+                {
+                    account.recipes.length == 0 ?
+                        <View style={[{ flex: 1 }]}>
+                            <Text style={[customStyles.buttontext, { fontSize: 15, marginTop: 20 }]}>Para começar a medição,{'\n'} crie um plano de assado</Text>
+                        </View>
+                        :
+                        <FlatList
+                            data={account.recipes}
+                            refreshing={load.refreshing}
+                            onRefresh={() => { handleRefresh() }}
+                            keyExtractor={(item) => item._id}
+                            renderItem={({ item }) => (
+                                item.active && !item.default ?
+                                    <TouchableHighlight onPress={() => { navigation.navigate('Principal', { account: account, recipe: item }) }} onLongPress={() => { showPopup(item); }} underlayColor="#eb4034" style={[customStyles.recipe, customStyles.shadow]}>
+                                        <View>
+                                            <Text style={[{ color: "#FFF", fontSize: 18 }]}>Nome: {item.name}</Text>
+                                            <Text style={[{ color: "#FFF", fontSize: 18 }]}>Descrição: {item.description}</Text>
+                                            <Text style={[{ color: "#FFF", fontSize: 18 }]}>Carnes: {item.num_carnes}</Text>
+                                        </View>
+                                    </TouchableHighlight> : null
+                            )}>
+                        </FlatList>
+                }
             </View>
             <TouchableOpacity style={[customStyles.button, customStyles.shadowButton, customStyles.colorBackground]} onPress={() => { navigation.navigate('CadastrarReceita', account) }} >
                 <Text style={customStyles.buttontext}>Criar Plano de Assado</Text>
@@ -140,6 +146,6 @@ export default function Acoes({ navigation }) {
                     </View>
                 </View>
             </Modal>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 };

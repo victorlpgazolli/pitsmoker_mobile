@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, StyleSheet, Dimensions, Text, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Dimensions, Text, TextInput, ToastAndroid, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import api from '../services/api';
 var account = {
@@ -60,7 +60,11 @@ export default function RegisterRecipe({ navigation }) {
         // }
     }
     return (
-        <View style={styles.body}>
+        <KeyboardAvoidingView
+            behavior="padding"
+            enabled
+            keyboardVerticalOffset={50}
+            style={styles.body}>
             <View style={styles.form}>
                 <View style={[{ flexDirection: 'row', marginHorizontal: 10 }]}>
                     <Text style={[styles.buttontext, { marginVertical: 20, marginHorizontal: 10, }]}>Nome: </Text>
@@ -75,7 +79,7 @@ export default function RegisterRecipe({ navigation }) {
                     />
                 </View>
                 <View style={[{ marginHorizontal: 10, }]}>
-                    <Text style={[styles.buttontext, { marginTop: 20, marginHorizontal: 10, }]}>Descrição: </Text>
+                    <Text style={[styles.buttontext, { marginTop: 0, marginHorizontal: 10, }]}>Descrição: </Text>
                     <TextInput
                         onChangeText={val => recipe.description = val}
                         placeholder="Digite o nome"
@@ -84,7 +88,7 @@ export default function RegisterRecipe({ navigation }) {
                         multiline={true}
                         numberOfLines={4}
                         autoCorrect={false}
-                        style={[styles.input, { height: 100 }]}
+                        style={[styles.input, { height: 65, textAlignVertical: 'top' }]}
                         maxLength={197}
                     />
                 </View>
@@ -106,7 +110,7 @@ export default function RegisterRecipe({ navigation }) {
             <TouchableOpacity onPress={handleRegister} style={styles.submitBtn}>
                 <Text style={styles.submitBtnText}>Criar receita</Text>
             </TouchableOpacity>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 const styles = StyleSheet.create({
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#2B2B2B'
     }, form: {
-        marginTop: 30
+        marginTop: 10
     },
     input: {
         height: 46,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, BackHandler, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, Platform, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select';
-
+const { OS: plataforma } = Platform;
 var typeOfMetric = []
 export default class SelectBox extends Component {
     state = { typeOfMetric: [], selectedTypeOfMetric: '' }
@@ -55,13 +55,14 @@ const pickerSelectStyles = StyleSheet.create({
         //paddingRight: 25, // to ensure the text is never behind the icon
     },
     inputAndroid: {
-        fontSize: 16,
-        paddingHorizontal: 10,
+        fontSize: 10,
         paddingVertical: 5,
-        borderWidth: 0.5,
-        borderColor: 'purple',
-        borderRadius: 8,
+        width: 130,
+        paddingHorizontal: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 4,
         color: '#fff',
-        //paddingRight: 30, // to ensure the text is never behind the icon
+        // paddingRight: 30, // to ensure the text is never behind the icon
     },
 });

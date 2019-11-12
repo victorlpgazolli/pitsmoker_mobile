@@ -18,7 +18,7 @@ const styles = {
         paddingHorizontal: 15,
     },
     button: {
-        height: 70,
+        height: 60,
         alignSelf: "stretch",
         borderRadius: 4,
         marginVertical: 10,
