@@ -18,7 +18,7 @@ export default function Login({ navigation }) {
                     if (stored_id.length > 0) {
                         async function getAccount() {
                             const response = await api.get('/users/' + stored_id)
-                            navigation.navigate(screenToNavigateTo, JSON.stringify(response.data.response))
+                            navigation.navigate(screenToNavigateTo, response.data.response)
                         }
                         getAccount()
                     }
@@ -42,7 +42,6 @@ export default function Login({ navigation }) {
                 // console.log(account)
                 try {
                     const { data } = await api.post('/users', { email: account.email, password: account.password })
-                    console.log(data)
                     data.error ?
                         ToastAndroid.show("Login ou senha invalidos", ToastAndroid.SHORT) :
                         accessGranted(data)

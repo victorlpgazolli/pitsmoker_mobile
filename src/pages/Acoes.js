@@ -23,7 +23,7 @@ export default function Acoes({ navigation }) {
 
     }, [account]);
 
-    account = refresh ? global.newAccount : JSON.parse(navigation.state.params)
+    account = refresh ? global.newAccount : JSON.parse(JSON.stringify(navigation.state.params))
     function showPopup(_recipe) {
         global.modal_recipe_actions = true;
         global.temp_recipe = _recipe;
