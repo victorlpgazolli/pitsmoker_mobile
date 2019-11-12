@@ -9,7 +9,7 @@ var account = {
     password: '',
     id: ''
 }
-var screenToNavigateTo = "Escolher"; //
+var screenToNavigateTo = "Acoes"; //
 export default function Login({ navigation }) {
     useEffect(async () => {
         try {
