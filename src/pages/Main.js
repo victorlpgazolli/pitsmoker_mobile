@@ -8,7 +8,8 @@ import SelectBox from '../components/SelectBox';
 import LinearGradient from 'react-native-linear-gradient';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import RNExitApp from 'react-native-exit-app';
-var lurl = 'http://192.168.0.104:3333'//'http://pit-smoker-backend.herokuapp.com'
+// 'http://192.168.0.104:3333'
+var lurl = 'http://pit-smoker-backend.herokuapp.com'
 var socket;
 var account = {};
 var newAlert = {
