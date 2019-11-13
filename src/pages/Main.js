@@ -7,7 +7,6 @@ import customStyles from '../assets/styles';
 import SelectBox from '../components/SelectBox';
 import LinearGradient from 'react-native-linear-gradient';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import RNExitApp from 'react-native-exit-app';
 // 'http://192.168.0.104:3333'
 var lurl = 'http://pit-smoker-backend.herokuapp.com'
 var socket;
@@ -30,14 +29,18 @@ export default function Main({ navigation }) {
   const [fireBox, setFireBox] = useState(0)
   const [isNew, updateisNew] = useState(false);
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
     socket.on("@app_sonda", msg => {
       setSonda(parseInt(msg));
+      checkIfAlert()
     });
     socket.on("@app_firebox", msg => {
       setFireBox(parseInt(msg));
+      checkIfAlert()
     });
     global.confirm = false;
+  }, [isNew])
+  var checkIfAlert = function () {
     for (var i = 0; i < alertBreakPoint.length; i++) {
       try {
         if (alertBreakPoint[i].selectedType == 'sonda') {
@@ -48,7 +51,6 @@ export default function Main({ navigation }) {
             if (index > -1) {
               alertBreakPoint.splice(index, 1);
             }
-            console.log(alertBreakPoint)
           }
         }
         if (alertBreakPoint[i].selectedType == 'firebox') {
@@ -57,9 +59,7 @@ export default function Main({ navigation }) {
             var index = alertBreakPoint.indexOf(alertBreakPoint[i]);
             socket.emit('@esp_firebox', "firebox")
             if (index > -1) {
-
               alertBreakPoint.splice(index, 1);
-              console.log(alertBreakPoint)
             }
           }
         }
@@ -67,13 +67,12 @@ export default function Main({ navigation }) {
         console.log(error)
       }
     }
-  }, [isNew])
-
+  }
   account = navigation.state.params.account;
   global.recipe = navigation.state.params.recipe;
 
   var convertToFahrenheit = function (celcius) {
-    return ((celcius * (9 / 5) + 32))
+    return ((celcius * (9 / 5) + 32)).toFixed(0)
   }
   var handleBackButton = function () {
     RNExitApp.exitApp()
