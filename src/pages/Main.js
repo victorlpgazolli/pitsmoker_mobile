@@ -32,12 +32,10 @@ export default function Main({ navigation }) {
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
     socket.on("@app_sonda", msg => {
-      setSonda(convertToFahrenheit(parseInt(msg)));
-      updateisNew(!isNew)
+      setSonda(parseInt(msg));
     });
     socket.on("@app_firebox", msg => {
-      setFireBox(convertToFahrenheit(parseInt(msg)));
-      updateisNew(!isNew)
+      setFireBox(parseInt(msg));
     });
     global.confirm = false;
     for (var i = 0; i < alertBreakPoint.length; i++) {
