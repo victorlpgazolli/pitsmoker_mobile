@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, FlatList, Image, TextInput, View, Dimensions, Text, TouchableHighlight, ToastAndroid, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, Platform, StyleSheet, FlatList, Image, BackHandler, View, Dimensions, Text, TouchableHighlight, ToastAndroid, TouchableOpacity } from 'react-native'
+import RNExitApp from 'react-native-exit-app';
 import customStyles from '../assets/styles';
 import api from '../services/api';
 import Modal from "react-native-modal";
@@ -16,7 +17,7 @@ export default function Acoes({ navigation }) {
     const forceUpdate = useCallback(() => updateState({}), []);
     useEffect(() => {
         try {
-
+            BackHandler.addEventListener('hardwareBackPress', handleBackButton);
         } catch (err) {
 
         }
@@ -37,6 +38,10 @@ export default function Acoes({ navigation }) {
         //simulate refresh
         getAccount();
         setLoad({ refreshing: true })
+    }
+    var handleBackButton = function () {
+        RNExitApp.exitApp()
+        return true;
     }
     async function deleteRecipe(_recipe) {
         try {
