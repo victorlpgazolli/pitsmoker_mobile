@@ -26,8 +26,8 @@ global.alertConfig = false;
 socket = io.connect(lurl);
 export default function Main({ navigation }) {
   const [alertBreakPoint, setAlertBreakPoint] = useState([])
-  const [sonda, setSonda] = useState(80)
-  const [fireBox, setFireBox] = useState(80)
+  const [sonda, setSonda] = useState(0)
+  const [fireBox, setFireBox] = useState(0)
   const [isNew, updateisNew] = useState(false);
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
